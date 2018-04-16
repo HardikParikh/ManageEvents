@@ -54,6 +54,9 @@ public class EventController {
 			System.out.println("Server Error");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new EventException(Constants.E005_MSG,Constants.E005,"Something went badly wrong. Please try again later")).build();
 		}	
+		finally{
+			eventService = null;
+		}
 	}
 	
 	@POST
@@ -82,5 +85,8 @@ public class EventController {
 			System.out.println("Server Error");
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new EventException(Constants.E005_MSG,Constants.E005,"Something went badly wrong. Please try again later")).build();
 		}		
+		finally{
+			eventService = null;
+		}	
     }
 }
