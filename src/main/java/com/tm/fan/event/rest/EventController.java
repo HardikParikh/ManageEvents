@@ -33,10 +33,10 @@ public class EventController {
 				return Response.status(Status.NOT_FOUND).entity(new EventException(Constants.E001_MSG,Constants.E001,"Please send the correct format of input parameters")).build();
 			}
 			
-			if(requestBean.getEventId() != null && !requestBean.getEventId().equals("0"))
-				cntResponse= eventService.getCountbyEvent(Integer.parseInt(requestBean.getEventId()));
-			else
-				cntResponse = eventService.getCountbyTypeAisle(requestBean.getType().charAt(0),requestBean.getAisle().charAt(0));
+			//if(requestBean.getEventId() != null && !requestBean.getEventId().equals("0"))
+			//	cntResponse= eventService.getCountbyEvent(Integer.parseInt(requestBean.getEventId()));
+			//else
+			cntResponse = eventService.getSeatCounts(Integer.parseInt(requestBean.getEventId()),requestBean.getType().charAt(0),requestBean.getAisle().charAt(0));
 			
 			if(cntResponse == null || cntResponse.equals(""))
 				throw new NullPointerException();

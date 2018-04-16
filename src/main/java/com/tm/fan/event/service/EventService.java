@@ -26,24 +26,10 @@ public class EventService {
 			return Constants.SUCCESS;
 	}
 	
-	public ArrayList<EventBean> getAllEvents(){
-		eventDAO = new EventDAO();
-		ArrayList<EventBean> eventArray = null;	
-		
-		try{
-			eventArray = eventDAO.getEventObj();
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			eventDAO=null;
-		}
-    	return eventArray;	
-	}
-	
 	public String getCountbyEvent(int eventId){
 		boolean start=true;
 		eventDAO = new EventDAO();
-		String returnStr = "{";
+		String returnStr = "[";
 		int totalCount = 0, bookedCount=0;
 		ArrayList<EventBean> eventArray = null;	
 		try{
@@ -67,7 +53,7 @@ public class EventService {
 					totalCount = 0;bookedCount=0;
 				}
 			}
-			returnStr += "}";
+			returnStr += "]";
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -77,48 +63,51 @@ public class EventService {
     	return returnStr;	
 	}
 	
-	public String getCountbyTypeAisle(Character type, Character isAisle){
+	public String getSeatCounts(int eventId, Character type, Character isAisle){
 		eventDAO = new EventDAO();
 		
 		int totalCount=0;
 		int bookedCount=0;
 		boolean start=true;
 		ArrayList<EventBean> eventArray = null;	
-		String returnStr ="{";
+		String returnStr ="[";
 		try{
 			eventArray = eventDAO.getEventObj();
 			for (EventBean eventBean : eventArray) {
-				for (LocationBean locationBean : eventBean.getLocationBean()) {
-					for (SeatBean seatBean : locationBean.getSeatBean()) {
-						if((isAisle!='N' && (seatBean.getAisle()== isAisle)) && (type !='N' && seatBean.getSeatType() == type)){
-							totalCount++;
-							if(seatBean.isAvailable() == true)
-								bookedCount++;
-						}else if((isAisle!='N' && (seatBean.getAisle()== isAisle)) && type=='N'){
-							totalCount++;
-							if(seatBean.isAvailable() == true)
-								bookedCount++;
-						}else if(isAisle=='N' && (type !='N' && seatBean.getSeatType() == type)){
-							totalCount++;
-							if(seatBean.isAvailable() == true)
-								bookedCount++;
-						}else if(isAisle=='N' && type=='N'){
-							totalCount++;
-							if(seatBean.isAvailable() == true)
-								bookedCount++;
+				if(eventBean.getEventId() == eventId || eventId==0){					
+					for (LocationBean locationBean : eventBean.getLocationBean()) {
+						for (SeatBean seatBean : locationBean.getSeatBean()) {
+							if((isAisle!='N' && (seatBean.getAisle()== isAisle)) && (type !='N' && seatBean.getSeatType() == type)){
+								totalCount++;
+								if(seatBean.isAvailable() == true)
+									bookedCount++;
+							}else if((isAisle!='N' && (seatBean.getAisle()== isAisle)) && type=='N'){
+								totalCount++;
+								if(seatBean.isAvailable() == true)
+									bookedCount++;
+							}else if(isAisle=='N' && (type !='N' && seatBean.getSeatType() == type)){
+								totalCount++;
+								if(seatBean.isAvailable() == true)
+									bookedCount++;
+							}else if(isAisle=='N' && type=='N'){
+								totalCount++;
+								if(seatBean.isAvailable() == true)
+									bookedCount++;
+							}
 						}
-					}	
+					}
+				
+					ResponseCount responseCnt = new ResponseCount(eventBean.getEventId(),totalCount,bookedCount);
+					if(start){
+						returnStr += "{" + responseCnt.toString() + "}";
+						start=false;
+					}else {
+						returnStr += ",{" + responseCnt.toString() + "}";
+					}
+					totalCount = 0;bookedCount=0;
 				}
-				ResponseCount responseCnt = new ResponseCount(eventBean.getEventId(),totalCount,bookedCount);
-				if(start){
-					returnStr += "{" + responseCnt.toString() + "}";
-					start=false;
-				}else {
-					returnStr += ",{" + responseCnt.toString() + "}";
-				}
-				totalCount = 0;bookedCount=0;
 			}
-			returnStr += "}";
+			returnStr += "]";
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
