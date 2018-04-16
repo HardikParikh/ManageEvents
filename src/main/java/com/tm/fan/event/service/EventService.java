@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class EventService {
 	
+	
 	EventDAO eventDAO;
 	
 	public String validateInput(RequestBean requestBean){
