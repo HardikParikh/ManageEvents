@@ -95,8 +95,7 @@ public class EventService {
 									bookedCount++;
 							}
 						}
-					}
-				
+					}				
 					ResponseCount responseCnt = new ResponseCount(eventBean.getEventId(),totalCount,bookedCount);
 					if(start){
 						returnStr += "{" + responseCnt.toString() + "}";
